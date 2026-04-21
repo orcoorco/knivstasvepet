@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Knivstasvepet</title>
+<style>
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: #f4f4f4;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    color: #222;
+    padding: 24px 16px 64px 16px;
+  }
+  .page { max-width: 720px; margin: 0 auto; }
+  .toolbar {
+    position: sticky; top: 12px; z-index: 10;
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 20px;
+    padding: 12px 16px;
+    background: #fff;
+    border: 1px solid #e5e5e5;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  }
+  .toolbar h1 { font-size: 14px; margin: 0; color: #666; font-weight: 500; }
+  .btn-group { display: flex; gap: 8px; align-items: center; }
+  .copy-btn, .restore-btn {
+    padding: 8px 16px;
+    border: none; border-radius: 6px;
+    cursor: pointer; font-size: 14px; font-weight: 500;
+    transition: background 120ms ease, opacity 120ms ease;
+  }
+  .copy-btn { background: #111; color: #fff; padding: 8px 18px; }
+  .copy-btn:hover { background: #333; }
+  .copy-btn.ok  { background: #16a34a; }
+  .copy-btn.err { background: #dc2626; }
+  .restore-btn { background: transparent; color: #666; border: 1px solid #ddd; display: none; }
+  .restore-btn.show { display: inline-block; }
+  .restore-btn:hover { background: #f6f6f6; color: #111; }
+  .card { background: #fff; border: 1px solid #e5e5e5; border-radius: 10px; padding: 0; overflow: hidden; }
+
+  /* item controls */
+  [data-item] { position: relative; transition: opacity 180ms ease; }
+  .item-remove-btn {
+    position: absolute;
+    right: -8px; top: -6px;
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    border: 1px solid #e0e0e0;
+    background: #fff;
+    color: #888;
+    font-size: 16px; line-height: 1;
+    cursor: pointer;
+    padding: 0;
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0.55;
+    transition: opacity 120ms, background 120ms, border-color 120ms, color 120ms;
+  }
+  .item-remove-btn:hover {
+    opacity: 1;
+    background: #dc2626;
+    border-color: #dc2626;
+    color: #fff;
+  }
+  [data-item][data-removed="true"] { opacity: 0.32; }
+  [data-item][data-removed="true"] .item-remove-btn {
+    opacity: 1;
+    background: #fff;
+    border-color: #bbb;
+    color: #555;
+  }
+  [data-item][data-removed="true"] .item-remove-btn:hover {
+    background: #f6f6f6;
+    color: #111;
+  }
+
+  /* Redigerbara fält (intro/outro/Hejsan) */
+  [contenteditable="true"] {
+    cursor: text;
+    border-radius: 4px;
+    transition: background 120ms, box-shadow 120ms;
+  }
+  [contenteditable="true"]:hover { background: #fafaf5; }
+  [contenteditable="true"]:focus {
+    outline: none;
+    background: #fff8e1;
+    box-shadow: 0 0 0 2px #f5d880;
+  }
+</style>
+</head>
+<body>
+  <div class="page">
+    <div class="toolbar">
+      <h1>Knivstasvepet · 🍕 Ny pizzeria, gässen skräms bort och Alsike i serietoppen</h1>
+      <div class="btn-group">
+        <button class="restore-btn" id="restore-btn" type="button">Återställ borttagna</button>
+        <button class="copy-btn" id="copy-btn" type="button">Kopiera</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div id="content" style="max-width:640px;margin:0 auto;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#222;line-height:1.55;font-size:16px;background:#fff;padding:24px;">
+
+<p contenteditable="true" style="margin:0 0 12px 0;color:#999;">Hejsan!</p>
+
+<p contenteditable="true" style="font-size:17px;line-height:1.6;margin:0 0 32px 0;color:#999;"><em>Denna vecka öppnar en ny pizzeria på Centralvägen och kommunen tar i med hårdhandskarna mot gässen vid Gredelbyskolan. Dessutom står Alsike IF med ett bedrift i serien — och helgens loppis i Särsta är värd att markera i kalendern.</em></p>
+
+<h2 style="margin:88px 0 24px 0;font-size:22px;border-bottom:1px solid #eee;padding-bottom:8px;">🗞️ Veckans nyheter</h2>
+
+<div data-item>
+<h3 style="margin:0 0 8px 0;font-size:18px;line-height:1.35;">Ny pizzeria öppnar på Centralvägen</h3>
+<p style="margin:0 0 2px 0;line-height:1.55;">Efter flera månaders ombyggnad slår Pizzeria Bella upp portarna i det gamla blomstercaféets lokaler. Ägaren, Marco Rossini, har tidigare drivit restaurang i Uppsala och siktar på att servera både klassiska napolitanska pizzor och en liten lunchmeny. Invigning sker på lördag med gratis provsmakning.</p>
+<p style="margin:0 0 56px 0;font-size:13px;color:#666;"><a href="https://www.unt.se/nyheter/knivsta/ny-pizzeria-oppnar-pa-centralvagen" style="color:#666;">https://www.unt.se/nyheter/knivsta/ny-pizzeria-oppnar-pa-centralvagen</a> · <em>18 apr 09:14</em></p>
+</div>
+
+<div data-item>
+<h3 style="margin:0 0 8px 0;font-size:18px;line-height:1.35;">Kommunen ska skrämma gäss vid Gredelbyskolan</h3>
+<p style="margin:0 0 2px 0;line-height:1.55;">Efter klagomål från föräldrar om sönderbajsade skolgårdar sätter kommunen in roterande skrämselåtgärder. Det handlar om drönare och ljudbaserade skrämsel, inte jakt. Pilotperioden pågår under maj och juni och utvärderas i höst.</p>
+<p style="margin:0 0 56px 0;font-size:13px;color:#666;"><a href="https://knivsta.nu/skola/kommunen-ska-skramma-gass-vid-gredelbyskolan" style="color:#666;">https://knivsta.nu/skola/kommunen-ska-skramma-gass-vid-gredelbyskolan</a> · <em>17 apr 16:02</em></p>
+</div>
+
+<div data-item>
+<h3 style="margin:0 0 8px 0;font-size:18px;line-height:1.35;">Alsike IF tog hem serietoppen</h3>
+<p style="margin:0 0 2px 0;line-height:1.55;">Efter 2–1 borta mot Vaksala SK står Alsike IF ensamma i topp av division 4. Avgörandet kom via ett sent frisparksmål från nyförvärvet Theo Lindh. Nästa hemmamatch spelas på Alsikevallen lördag 26/4 kl. 14:00.</p>
+<p style="margin:0 0 56px 0;font-size:13px;color:#666;"><a href="https://sverigesradio.se/artikel/alsike-if-tog-hem-serietoppen" style="color:#666;">https://sverigesradio.se/artikel/alsike-if-tog-hem-serietoppen</a> · <em>20 apr 07:45</em></p>
+</div>
+
+<h2 style="margin:88px 0 24px 0;font-size:22px;border-bottom:1px solid #eee;padding-bottom:8px;">🗓️ Kommande vecka</h2>
+
+<div data-item>
+<h3 style="margin:0 0 8px 0;font-size:18px;line-height:1.35;">Vårloppis i Särsta</h3>
+<p style="margin:0 0 2px 0;line-height:1.55;">Klassisk loppis i Särstaskolans aula. Utställare på plats från hela Knivsta. Fikaförsäljning till förmån för fritidsverksamheten.</p>
+<p style="margin:0 0 56px 0;font-size:13px;color:#666;"><em>Särstaskolan | Lördag 25/4, kl. 10:00</em> · <a href="https://knivsta.se/event/varloppis-sarsta" style="color:#666;">https://knivsta.se/event/varloppis-sarsta</a></p>
+</div>
+
+<div data-item>
+<h3 style="margin:0 0 8px 0;font-size:18px;line-height:1.35;">Föreläsning: klimatförändring i vår närmiljö</h3>
+<p style="margin:0 0 2px 0;line-height:1.55;">Naturskyddsföreningen bjuder in forskaren Anna Bergström som berättar om klimateffekter specifikt för Mälardalen. Fika ingår. Fri entré, men föranmälan till info@nsf-knivsta.se.</p>
+<p style="margin:0 0 56px 0;font-size:13px;color:#666;"><em>Biblioteket | Tisdag 28/4, kl. 19:00</em> · <a href="https://knivsta.nu/event/klimat-forelasning" style="color:#666;">https://knivsta.nu/event/klimat-forelasning</a></p>
+</div>
+
+<div data-item>
+<h3 style="margin:0 0 8px 0;font-size:18px;line-height:1.35;">Alsike IF – Bälinge SK (hemmamatch)</h3>
+<p style="margin:0 0 2px 0;line-height:1.55;">Div 4 herr. Första hemmamatchen efter seger borta. Kiosken öppen från 13:30.</p>
+<p style="margin:0 0 56px 0;font-size:13px;color:#666;"><em>Alsikevallen | Lördag 26/4, kl. 14:00</em> · <a href="https://alsike-if.se/matcher/alsike-balinge" style="color:#666;">https://alsike-if.se/matcher/alsike-balinge</a></p>
+</div>
+
+<hr style="border:none;border-top:1px solid #eee;margin:40px 0;">
+
+<p contenteditable="true" style="font-size:17px;line-height:1.6;color:#999;margin:0;"><em>Det var Knivstasvepet för denna vecka — ses nästa fredag.</em></p>
+
+      </div>
+    </div>
+  </div>
+
+<script>
+  (function () {
+    var content = document.getElementById('content');
+    var copyBtn = document.getElementById('copy-btn');
+    var restoreBtn = document.getElementById('restore-btn');
+
+    // Injicera ×-knapp i varje post
+    var items = content.querySelectorAll('[data-item]');
+    items.forEach(function (item) {
+      var btn = document.createElement('button');
+      btn.className = 'item-remove-btn';
+      btn.type = 'button';
+      btn.title = 'Ta bort från nyhetsbrev';
+      btn.innerHTML = '&times;';
+      btn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        var removed = item.getAttribute('data-removed') === 'true';
+        if (removed) {
+          item.removeAttribute('data-removed');
+          btn.innerHTML = '&times;';
+          btn.title = 'Ta bort från nyhetsbrev';
+        } else {
+          item.setAttribute('data-removed', 'true');
+          btn.innerHTML = '&#8635;';
+          btn.title = 'Återställ';
+        }
+        updateRestoreBtn();
+      });
+      item.appendChild(btn);
+    });
+
+    function updateRestoreBtn() {
+      var anyRemoved = content.querySelector('[data-item][data-removed="true"]') !== null;
+      restoreBtn.classList.toggle('show', anyRemoved);
+    }
+
+    restoreBtn.addEventListener('click', function () {
+      content.querySelectorAll('[data-item][data-removed="true"]').forEach(function (item) {
+        item.removeAttribute('data-removed');
+        var btn = item.querySelector('.item-remove-btn');
+        if (btn) { btn.innerHTML = '&times;'; btn.title = 'Ta bort från nyhetsbrev'; }
+      });
+      updateRestoreBtn();
+    });
+
+    function getCopyHTML() {
+      var clone = content.cloneNode(true);
+      // Ta bort borttagna poster
+      clone.querySelectorAll('[data-item][data-removed="true"]').forEach(function (el) { el.remove(); });
+      // Ta bort ×-knappar
+      clone.querySelectorAll('.item-remove-btn').forEach(function (el) { el.remove(); });
+      // Rensa data-attributet (osynligt men onödigt i Substack)
+      clone.querySelectorAll('[data-item]').forEach(function (el) { el.removeAttribute('data-item'); });
+      // Rensa contenteditable (ingen mening i slutpublikationen)
+      clone.querySelectorAll('[contenteditable]').forEach(function (el) { el.removeAttribute('contenteditable'); });
+      return clone.innerHTML;
+    }
+
+    function getCopyPlain() {
+      var clone = content.cloneNode(true);
+      clone.querySelectorAll('[data-item][data-removed="true"]').forEach(function (el) { el.remove(); });
+      clone.querySelectorAll('.item-remove-btn').forEach(function (el) { el.remove(); });
+      return clone.innerText;
+    }
+
+    copyBtn.addEventListener('click', async function () {
+      var html  = getCopyHTML();
+      var plain = getCopyPlain();
+      try {
+        if (navigator.clipboard && window.ClipboardItem) {
+          await navigator.clipboard.write([ new ClipboardItem({
+            'text/html':  new Blob([html],  { type: 'text/html'  }),
+            'text/plain': new Blob([plain], { type: 'text/plain' })
+          })]);
+        } else {
+          // Fallback: markera DOM-noden tillfälligt och execCommand
+          var tmp = document.createElement('div');
+          tmp.innerHTML = html;
+          tmp.style.position = 'fixed'; tmp.style.left = '-9999px';
+          document.body.appendChild(tmp);
+          var range = document.createRange();
+          range.selectNodeContents(tmp);
+          var sel = window.getSelection();
+          sel.removeAllRanges(); sel.addRange(range);
+          document.execCommand('copy');
+          sel.removeAllRanges();
+          document.body.removeChild(tmp);
+        }
+        copyBtn.textContent = 'Kopierat!';
+        copyBtn.className = 'copy-btn ok';
+      } catch (e) {
+        copyBtn.textContent = 'Fel: ' + (e.message || e);
+        copyBtn.className = 'copy-btn err';
+      }
+      setTimeout(function () {
+        copyBtn.textContent = 'Kopiera';
+        copyBtn.className = 'copy-btn';
+      }, 2500);
+    });
+  })();
+</script>
+
+</body>
+</html>
