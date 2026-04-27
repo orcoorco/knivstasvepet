@@ -40,7 +40,6 @@
   .restore-btn:hover { background: #f6f6f6; color: #111; }
   .card { background: #fff; border: 1px solid #e5e5e5; border-radius: 10px; padding: 0; overflow: hidden; }
 
-  /* item controls */
   [data-item] { position: relative; transition: opacity 180ms ease; }
   .item-remove-btn {
     position: absolute;
@@ -56,6 +55,7 @@
     display: flex; align-items: center; justify-content: center;
     opacity: 0.55;
     transition: opacity 120ms, background 120ms, border-color 120ms, color 120ms;
+    z-index: 2;
   }
   .item-remove-btn:hover {
     opacity: 1;
@@ -75,6 +75,35 @@
     color: #111;
   }
 
+  .item-drag-handle {
+    position: absolute;
+    left: -8px; top: -6px;
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    border: 1px solid #e0e0e0;
+    background: #fff;
+    color: #999;
+    font-size: 14px; line-height: 1;
+    cursor: grab;
+    padding: 0;
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0.55;
+    user-select: none;
+    transition: opacity 120ms, background 120ms, color 120ms;
+    z-index: 2;
+  }
+  .item-drag-handle:hover {
+    opacity: 1;
+    background: #f6f6f6;
+    color: #111;
+  }
+  .item-drag-handle:active { cursor: grabbing; }
+  [data-item][data-removed="true"] .item-drag-handle { opacity: 0.3; }
+
+  .sortable-ghost { opacity: 0.35; background: #fafafa; }
+  .sortable-chosen { box-shadow: 0 4px 16px rgba(0,0,0,0.10); }
+  .sortable-drag { box-shadow: 0 6px 24px rgba(0,0,0,0.18); }
+
   /* Redigerbara fält (intro/outro/Hejsan) */
   [contenteditable="true"] {
     cursor: text;
@@ -92,7 +121,7 @@
 <body>
   <div class="page">
     <div class="toolbar">
-      <h1>Knivstasvepet · 🍕 Ny pizzeria, gässen skräms bort och Alsike i serietoppen</h1>
+      <h1>Knivstasvepet · <span id="subject-hint">🦇 Fladdermöss vid Lidl, busskaoset förklaras och fängelse för hemliga bilder</span></h1>
       <div class="btn-group">
         <button class="restore-btn" id="restore-btn" type="button">Återställ borttagna</button>
         <button class="copy-btn" id="copy-btn" type="button">Kopiera</button>
@@ -104,46 +133,122 @@
 
 <p contenteditable="true" style="margin:0 0 12px 0;color:#999;">Hejsan!</p>
 
-<p contenteditable="true" style="font-size:17px;line-height:1.6;margin:0 0 32px 0;color:#999;"><em>Denna vecka öppnar en ny pizzeria på Centralvägen och kommunen tar i med hårdhandskarna mot gässen vid Gredelbyskolan. Dessutom står Alsike IF med ett bedrift i serien — och helgens loppis i Särsta är värd att markera i kalendern.</em></p>
+<p contenteditable="true" style="font-size:17px;line-height:1.6;margin:0 0 32px 0;color:#999;"><em>Veckans svep rymmer allt från förklaringar till det senaste busskaoset vid stationen till hur sällsynta fladdermöss nu kan sätta stopp för Lidls butiksplaner. Vi tipsar också om vårens alla lokala utflykter och ser fram emot en fullspäckad kulturvecka på CIK med både Nanne Grönvall och musikalen Shrek på scen.</em></p>
 
 <h2 style="margin:88px 0 24px 0;font-size:22px;border-bottom:1px solid #eee;padding-bottom:8px;">🗞️ Veckans nyheter</h2>
 
 <div data-item>
-<h3 style="margin:0 0 8px 0;font-size:18px;line-height:1.35;">Ny pizzeria öppnar på Centralvägen</h3>
-<p style="margin:0 0 2px 0;line-height:1.55;">Efter flera månaders ombyggnad slår Pizzeria Bella upp portarna i det gamla blomstercaféets lokaler. Ägaren, Marco Rossini, har tidigare drivit restaurang i Uppsala och siktar på att servera både klassiska napolitanska pizzor och en liten lunchmeny. Invigning sker på lördag med gratis provsmakning.</p>
-<p style="margin:0 0 56px 0;font-size:13px;color:#666;"><a href="https://www.unt.se/nyheter/knivsta/ny-pizzeria-oppnar-pa-centralvagen" style="color:#666;">https://www.unt.se/nyheter/knivsta/ny-pizzeria-oppnar-pa-centralvagen</a> · <em>18 apr 09:14</em></p>
+<h3 style="margin:0 0 8px 0;font-size:18px;line-height:1.35;">Regionen erkänner miss: Därför blev det busskaos i Knivsta</h3>
+<p style="margin:0 0 2px 0;line-height:1.55;">Förra helgens banarbeten ledde till kaos vid Knivsta station när ersättningsbussarna visade sig vara alldeles för få för alla resenärer. Region Stockholm förklarar nu att de missbedömde hur många som skulle resa hem från Kulturnatten i Stockholm, vilket lämnade många strandsatta. Vittnen på plats beskriver situationen som förtvivlad med både gråt och arga rop i väntan på skjuts.</p>
+<p style="margin:0 0 56px 0;font-size:13px;color:#666;"><a href="https://www.unt.se/nyheter/uppsala/artikel/missbedomde-uppsalabornas-intresse-for-kulturnatten/rx7dg1vl" style="color:#666;">https://www.unt.se/nyheter/uppsala/artikel/missbedomde-uppsalabornas-intresse-for-kulturnatten/rx7dg1vl</a> · <em>24 Apr 20:11</em></p>
+</div>
+<div data-item>
+<h3 style="margin:0 0 8px 0;font-size:18px;line-height:1.35;">Knivstabo döms till fängelse för spridning av hemliga bilder</h3>
+<p style="margin:0 0 2px 0;line-height:1.55;">En man från Knivsta har dömts till sex månaders fängelse för att ha spridit hemliga uppgifter om svenska försvarsanläggningar i ett nätforum. Totalt rör det sig om fotografier och kartor över 31 olika skyddsobjekt som delats med andra militärintresserade. Brottet rubriceras som grov obehörig befattning med hemlig uppgift.</p>
+<p style="margin:0 0 56px 0;font-size:13px;color:#666;"><a href="https://www.unt.se/nyheter/knivsta/artikel/hovratten-sanker-straff-for-grov-obehorig-befattning/jp2w0oqr" style="color:#666;">https://www.unt.se/nyheter/knivsta/artikel/hovratten-sanker-straff-for-grov-obehorig-befattning/jp2w0oqr</a> · <em>24 Apr 19:07</em></p>
+</div>
+<div data-item>
+<h3 style="margin:0 0 8px 0;font-size:18px;line-height:1.35;">Fridlysta fladdermöss kan stoppa Lidls etablering</h3>
+<p style="margin:0 0 2px 0;line-height:1.55;">Lidls planer på en butik mellan Brunnbyrondellen och Ar bussterminal möter nya hinder efter att fridlysta fladdermöss upptäckts på platsen. Länsstyrelsen kräver nu en fördjupad inventering av de sex olika arterna innan projektet kan gå vidare. Trots de nya naturvårdskraven meddelar de styrande politikerna i Knivsta att de avser att fortsätta pröva platsen för bygget.</p>
+<p style="margin:0 0 56px 0;font-size:13px;color:#666;"><a href="https://www.unt.se/nyheter/knivsta/artikel/fladdermoss-hittade-kan-stjalpa-lidls-planer-igen/jp2w4n6r" style="color:#666;">https://www.unt.se/nyheter/knivsta/artikel/fladdermoss-hittade-kan-stjalpa-lidls-planer-igen/jp2w4n6r</a> · <em>24 Apr 10:30</em></p>
+</div>
+<div data-item>
+<h3 style="margin:0 0 8px 0;font-size:18px;line-height:1.35;">Alsikevilla såld för 7 miljoner kronor</h3>
+<p style="margin:0 0 2px 0;line-height:1.55;">Fastigheten på Åsgatan 60 i Alsike har fått nya ägare efter en affär på 7 miljoner kronor. Den 168 kvadratmeter stora villan är byggd 2008 och köpet blev klart under våren. Försäljningen är den senaste i raden av miljonaffärer i det populära bostadsområdet.</p>
+<p style="margin:0 0 56px 0;font-size:13px;color:#666;"><a href="https://www.unt.se/bostad/fastighetsaffarer/artikel/7000000-kronor-blev-priset-for-villa-i-alsike-knivsta/lwoq6wwj" style="color:#666;">https://www.unt.se/bostad/fastighetsaffarer/artikel/7000000-kronor-blev-priset-for-villa-i-alsike-knivsta/lwoq6wwj</a> · <em>24 Apr 04:55</em></p>
+</div>
+<div data-item>
+<h3 style="margin:0 0 8px 0;font-size:18px;line-height:1.35;">Kommunen sätter press på Mälartåg efter vinterns strul</h3>
+<p style="margin:0 0 2px 0;line-height:1.55;">Knivsta kommun riktar nu skarp kritik mot Mälardalstrafik efter en vinter präglad av inställda avgångar och kraftig trängsel på tågen. Enligt kommunen har bristerna skapat stor stress hos pendlarna som måste kunna lita på att tågen går i tid. Mälardalstrafik ser nu en viss förbättring i punktligheten, även om helt nya tåg väntas först under 2028.</p>
+<p style="margin:0 0 56px 0;font-size:13px;color:#666;"><a href="https://www.svt.se/nyheter/lokalt/uppsala/knivsta-kritiserar-malartag-efter-vinterns-tagstrul-leder-till-stress" style="color:#666;">https://www.svt.se/nyheter/lokalt/uppsala/knivsta-kritiserar-malartag-efter-vinterns-tagstrul-leder-till-stress</a> · <em>21 Apr 05:30</em></p>
+</div>
+<div data-item>
+<h3 style="margin:0 0 8px 0;font-size:18px;line-height:1.35;">Dags att boka: Församlingsläger för alla åldrar på Väddö</h3>
+<p style="margin:0 0 2px 0;line-height:1.55;">Svenska kyrkan i Knivsta bjuder in till ett gemensamt församlingsläger på Björkögården den 28–30 augusti 2026. Helgen bjuder på gemenskap, aktiviteter och mässa för alla åldrar med transport, mat och boende inkluderat i priset. Barn och ungdomar upp till 17 år följer med helt gratis, medan vuxna betalar 500 kronor för hela vistelsen.</p>
+<p style="margin:0 0 56px 0;font-size:13px;color:#666;"><a href="https://www.svenskakyrkan.se/knivsta/nyheter/knivsta-forsamlingslager-2026" style="color:#666;">https://www.svenskakyrkan.se/knivsta/nyheter/knivsta-forsamlingslager-2026</a> · <em>24 Apr 13:48</em></p>
+</div>
+<div data-item>
+<h3 style="margin:0 0 8px 0;font-size:18px;line-height:1.35;">Följ med på bussresa till anrika kyrkor i maj</h3>
+<p style="margin:0 0 2px 0;line-height:1.55;">Den 12 maj bjuder Knivsta pastorat in till en gemensam bussresa med besök i Husby-Långhundra och Vassunda kyrka. Utflykten utgår från S:ta Birgittakyrkan och inkluderar både lunchsmörgås och fika till en kostnad av 100 kronor. Sista dag för anmälan är den 6 maj till pastoratets kontaktpersoner.</p>
+<p style="margin:0 0 56px 0;font-size:13px;color:#666;"><a href="https://www.svenskakyrkan.se/knivsta/nyheter/bussresa-tisdag-12-maj" style="color:#666;">https://www.svenskakyrkan.se/knivsta/nyheter/bussresa-tisdag-12-maj</a> · <em>24 Apr 13:03</em></p>
+</div>
+<div data-item>
+<h3 style="margin:0 0 8px 0;font-size:18px;line-height:1.35;">Följ med Lagga syförening på årets bussresa till Lagunda</h3>
+<p style="margin:0 0 2px 0;line-height:1.55;">Den 3 juni bjuder Lagga kyrkliga syförening in till en dagsutflykt med stopp vid bland annat Hjälsta kyrka, Nysätra skolmuseum och Landsberga gårdsbutik. Bussen avgår från både Lagga och S:ta Birgittakyrkan och resan kostar 250 kronor per person inklusive lunch. Säkra din plats genom att anmäla dig senast den 22 maj.</p>
+<p style="margin:0 0 56px 0;font-size:13px;color:#666;"><a href="https://www.svenskakyrkan.se/knivsta/nyheter/lagga-kyrkliga-syforenings-arliga-resa" style="color:#666;">https://www.svenskakyrkan.se/knivsta/nyheter/lagga-kyrkliga-syforenings-arliga-resa</a> · <em>21 Apr 04:20</em></p>
+</div>
+<div data-item>
+<h3 style="margin:0 0 8px 0;font-size:18px;line-height:1.35;">Dags för gymnasieelever att söka reseersättning</h3>
+<p style="margin:0 0 2px 0;line-height:1.55;">Ska du studera på gymnasiet i höst kan du ha rätt till reseersättning om du har minst sex kilometer till skolan. För elever som redan går på gymnasiet ska ansökan lämnas senast 31 maj, medan nyintagna har fram till 1 juli på sig. Ansökan sker via kommunens e-tjänst och gäller även inackorderingstillägg om din totala restid överstiger tre timmar per dag.</p>
+<p style="margin:0 0 56px 0;font-size:13px;color:#666;"><a href="https://knivsta.se/nyhetspublicering/nyheter-forskola-och-skola/2026-04-24-reseersattning-och-inackorderingstillagg-for-gymnasieelever-lasaret-2026-2027" style="color:#666;">https://knivsta.se/nyhetspublicering/nyheter-forskola-och-skola/2026-04-24-reseersattning-och-inackorderingstillagg-for-gymnasieelever-lasaret-2026-2027</a> · <em>24 Apr 09:00</em></p>
+</div>
+<div data-item>
+<h3 style="margin:0 0 8px 0;font-size:18px;line-height:1.35;">Lyckträffen stängd efter brand – städdag ersätter</h3>
+<p style="margin:0 0 2px 0;line-height:1.55;">Mötesplatsen Lyckträffen håller stängt till och med tisdag den 28 april efter en mindre brand i ett elskåp. Lokalerna saknar för tillfället ström och behöver vädras ut, men ingen person kom till skada vid händelsen. Som ersättning bjuds alla lediga in till en gemensam städdag med fika på Estrids innergård nu på måndag klockan 10.00.</p>
+<p style="margin:0 0 56px 0;font-size:13px;color:#666;"><a href="https://knivsta.se/nyhetspublicering/nyheter-stod-och-omsorg/2026-04-23-uppdatering-fredag-24-april-motesplatsen-lycktraffen-haller-stangt-aven-mandag-och-tisdag-pa-grund-av-mindre-brand-i-elskap" style="color:#666;">https://knivsta.se/nyhetspublicering/nyheter-stod-och-omsorg/2026-04-23-uppdatering-fredag-24-april-motesplatsen-lycktraffen-haller-stangt-aven-mandag-och-tisdag-pa-grund-av-mindre-brand-i-elskap</a> · <em>23 Apr 16:19</em></p>
+</div>
+<div data-item>
+<h3 style="margin:0 0 8px 0;font-size:18px;line-height:1.35;">Stort engagemang för Knivstas framtid på öppet hus</h3>
+<p style="margin:0 0 2px 0;line-height:1.55;">Ett 60-tal Knivstabor besökte nyligen Samhällsbyggnadskontorets öppna hus för att diskutera allt från den nya stadsparken till järnvägsutbyggnaden och bygglovsfrågor. Under kvällen visades även skisser på småskaliga bostäder i Träfallet och Myrberget samt information om den kommande järnvägsstationen i Alsike. För dig som missade mötet går det fortfarande bra att kontakta kommunens kontaktcenter med frågor om hur Knivsta ska utvecklas framöver.</p>
+<p style="margin:0 0 56px 0;font-size:13px;color:#666;"><a href="https://knivsta.se/nyhetspublicering/nyheter-bygga-och-bo/2026-04-23-tack-till-alla-som-kom-till-oppet-hus-med-samhallsbyggnadskontoret" style="color:#666;">https://knivsta.se/nyhetspublicering/nyheter-bygga-och-bo/2026-04-23-tack-till-alla-som-kom-till-oppet-hus-med-samhallsbyggnadskontoret</a> · <em>23 Apr 09:20</em></p>
+</div>
+<div data-item>
+<h3 style="margin:0 0 8px 0;font-size:18px;line-height:1.35;">Nu blommar det i Knivsta – här hittar du årets vårplanteringar</h3>
+<p style="margin:0 0 2px 0;line-height:1.55;">Kommunens parklag har nu börjat fylla urnor runt om i Knivsta och Alsike med vårblommor i skira nyanser av rosa, gult och vitt. Årets urval av bland annat ranunkel och hyacint är särskilt utvalt för att även ge viktig mat till pollinatörer som bin och humlor. Blomsterprakten finns att skåda på flera centrala platser, däribland vid stationen, CIK och i Dammparken.</p>
+<p style="margin:0 0 56px 0;font-size:13px;color:#666;"><a href="https://knivsta.se/nyhetspublicering/nyheter-trafik-och-utemiljoer/2026-04-21-nu-blommar-knivsta---varens-plantor-ar-har" style="color:#666;">https://knivsta.se/nyhetspublicering/nyheter-trafik-och-utemiljoer/2026-04-21-nu-blommar-knivsta---varens-plantor-ar-har</a> · <em>21 Apr 16:45</em></p>
+</div>
+<div data-item>
+<h3 style="margin:0 0 8px 0;font-size:18px;line-height:1.35;">Villa på Mogatan såld för 6 miljoner kronor</h3>
+<p style="margin:0 0 2px 0;line-height:1.55;">Huset på Mogatan 35 i Knivsta har fått nya ägare efter en affär på sex miljoner kronor. Den 129 kvadratmeter stora villan är byggd 2018 och bytte händer under våren. Försäljningen är en av de senaste i raden av fastighetsaffärer som präglat närområdet under den senaste tiden.</p>
+<p style="margin:0 0 56px 0;font-size:13px;color:#666;"><a href="https://www.unt.se/bostad/fastighetsaffarer/artikel/129-kvadratmeter-stort-hus-i-knivsta-salt-for-6000000-kronor/j8m44nyl" style="color:#666;">https://www.unt.se/bostad/fastighetsaffarer/artikel/129-kvadratmeter-stort-hus-i-knivsta-salt-for-6000000-kronor/j8m44nyl</a> · <em>27 Apr 04:17</em></p>
+</div>
+<div data-item>
+<h3 style="margin:0 0 8px 0;font-size:18px;line-height:1.35;">Region Stockholm erkänner: Därför blev det busskaos i Knivsta</h3>
+<p style="margin:0 0 2px 0;line-height:1.55;">Förra helgens banarbeten ledde till kaos vid Knivsta station när antalet ersättningsbussar inte räckte till för alla resenärer på väg hem mot Uppsala. Region Stockholm förklarar nu att de missbedömde resandetrycket under Kulturnatten, vilket lämnade många pendlare strandsatta och upprörda i natten. Trafikförvaltningen bemöter nu kritiken efter de kaosartade scenerna på stationsområdet.</p>
+<p style="margin:0 0 56px 0;font-size:13px;color:#666;"><a href="https://www.unt.se/nyheter/uppsala/artikel/missbedomde-uppsalabornas-intresse-for-kulturnatten/rx7dg1vl" style="color:#666;">https://www.unt.se/nyheter/uppsala/artikel/missbedomde-uppsalabornas-intresse-for-kulturnatten/rx7dg1vl</a> · <em>24 Apr 20:11</em></p>
+</div>
+<div data-item>
+<h3 style="margin:0 0 8px 0;font-size:18px;line-height:1.35;">Fridlysta fladdermöss kan stoppa Lidls planer i Knivsta</h3>
+<p style="margin:0 0 2px 0;line-height:1.55;">Lidls etablering vid Brunnbyrondellen stöter på nya patrull efter att Länsstyrelsen krävt en fördjupad inventering av fridlysta fladdermöss på platsen. Tidigare utredningar har visat att sex olika arter lever i området, vilket kan sätta stopp för byggplanerna. Trots beskedet meddelar kommunens ledning att man tänker fortsätta pröva platsen fullt ut.</p>
+<p style="margin:0 0 56px 0;font-size:13px;color:#666;"><a href="https://www.unt.se/nyheter/knivsta/artikel/fladdermoss-hittade-kan-stjalpa-lidls-planer-igen/jp2w4n6r" style="color:#666;">https://www.unt.se/nyheter/knivsta/artikel/fladdermoss-hittade-kan-stjalpa-lidls-planer-igen/jp2w4n6r</a> · <em>24 Apr 10:30</em></p>
+</div>
+<div data-item>
+<h3 style="margin:0 0 8px 0;font-size:18px;line-height:1.35;">Miljonaffär i Alsike – villa på Åsgatan har fått nya ägare</h3>
+<p style="margin:0 0 2px 0;line-height:1.55;">Villan på Åsgatan 60 har bytt ägare för en köpeskilling på 7 miljoner kronor. Fastigheten, som är byggd 2008, har en boyta på 168 kvadratmeter och ligger i ett område med fortsatt hög aktivitet på bostadsmarknaden. De nya ägarna är ett par i 40-årsåldern som nu tar över det rymliga huset.</p>
+<p style="margin:0 0 56px 0;font-size:13px;color:#666;"><a href="https://www.unt.se/bostad/fastighetsaffarer/artikel/7000000-kronor-blev-priset-for-villa-i-alsike-knivsta/lwoq6wwj" style="color:#666;">https://www.unt.se/bostad/fastighetsaffarer/artikel/7000000-kronor-blev-priset-for-villa-i-alsike-knivsta/lwoq6wwj</a> · <em>24 Apr 04:55</em></p>
+</div>
+<div data-item>
+<h3 style="margin:0 0 8px 0;font-size:18px;line-height:1.35;">Trafikstörningar på väg 77 – lastbil blockerar vägen mot Knivsta</h3>
+<p style="margin:0 0 2px 0;line-height:1.55;">En stillastående lastbil vid Rimbo har blockerat ett körfält på väg 77 i riktning mot Knivsta. Enligt Trafikverket har händelsen stor påverkan på trafiken och skapar köer för eftermiddagens pendlare. Störningen beräknas pågå fram till klockan 18.00 under torsdagskvällen.</p>
+<p style="margin:0 0 56px 0;font-size:13px;color:#666;"><a href="https://www.unt.se/trafik/norrtalje-kommun/artikel/just-nu-ett-korfalt-blockerat-pa-grund-av-en-stillastaende-lastbil-pa-vag-77/rmpop1nr" style="color:#666;">https://www.unt.se/trafik/norrtalje-kommun/artikel/just-nu-ett-korfalt-blockerat-pa-grund-av-en-stillastaende-lastbil-pa-vag-77/rmpop1nr</a> · <em>23 Apr 16:56</em></p>
+</div>
+<div data-item>
+<h3 style="margin:0 0 8px 0;font-size:18px;line-height:1.35;">Nytt städföretag etablerar sig i Knivsta</h3>
+<p style="margin:0 0 2px 0;line-height:1.55;">Det nystartade bolaget Carelight AB har nu registrerats med säte i Knivsta kommun. Företaget kommer att erbjuda dagliga städtjänster för privata hem och leds av styrelseledamoten Lucyna Rekowska. Etableringen innebär ytterligare ett tillskott till det lokala tjänsteutbudet för kommunens invånare.</p>
+<p style="margin:0 0 56px 0;font-size:13px;color:#666;"><a href="https://www.unt.se/naringsliv/nyetableringar/artikel/41-aring-startar-nytt-foretag-i-knivsta/r39d7nxr" style="color:#666;">https://www.unt.se/naringsliv/nyetableringar/artikel/41-aring-startar-nytt-foretag-i-knivsta/r39d7nxr</a> · <em>22 Apr 09:35</em></p>
+</div>
+<div data-item>
+<h3 style="margin:0 0 8px 0;font-size:18px;line-height:1.35;">Trafikstörning på E4 vid Brunnby avklarad</h3>
+<p style="margin:0 0 2px 0;line-height:1.55;">En stillastående personbil orsakade under onsdagsmorgonen stopp i ett körfält på E4 mellan länsgränsen och trafikplats Brunnby. Trafikverket uppgav att händelsen hade liten påverkan på trafiken i norrgående riktning mot Gävle. Vid niotiden var fordonet borta och trafiken flyter nu åter normalt förbi Knivsta.</p>
+<p style="margin:0 0 56px 0;font-size:13px;color:#666;"><a href="https://www.unt.se/trafik/knivsta-kommun/artikel/stillastaende-personbil-orsakar-stopp-i-ett-korfalt-pa-e4/rx7dvpgl" style="color:#666;">https://www.unt.se/trafik/knivsta-kommun/artikel/stillastaende-personbil-orsakar-stopp-i-ett-korfalt-pa-e4/rx7dvpgl</a> · <em>22 Apr 06:27</em></p>
 </div>
 
-<div data-item>
-<h3 style="margin:0 0 8px 0;font-size:18px;line-height:1.35;">Kommunen ska skrämma gäss vid Gredelbyskolan</h3>
-<p style="margin:0 0 2px 0;line-height:1.55;">Efter klagomål från föräldrar om sönderbajsade skolgårdar sätter kommunen in roterande skrämselåtgärder. Det handlar om drönare och ljudbaserade skrämsel, inte jakt. Pilotperioden pågår under maj och juni och utvärderas i höst.</p>
-<p style="margin:0 0 56px 0;font-size:13px;color:#666;"><a href="https://knivsta.nu/skola/kommunen-ska-skramma-gass-vid-gredelbyskolan" style="color:#666;">https://knivsta.nu/skola/kommunen-ska-skramma-gass-vid-gredelbyskolan</a> · <em>17 apr 16:02</em></p>
-</div>
-
-<div data-item>
-<h3 style="margin:0 0 8px 0;font-size:18px;line-height:1.35;">Alsike IF tog hem serietoppen</h3>
-<p style="margin:0 0 2px 0;line-height:1.55;">Efter 2–1 borta mot Vaksala SK står Alsike IF ensamma i topp av division 4. Avgörandet kom via ett sent frisparksmål från nyförvärvet Theo Lindh. Nästa hemmamatch spelas på Alsikevallen lördag 26/4 kl. 14:00.</p>
-<p style="margin:0 0 56px 0;font-size:13px;color:#666;"><a href="https://sverigesradio.se/artikel/alsike-if-tog-hem-serietoppen" style="color:#666;">https://sverigesradio.se/artikel/alsike-if-tog-hem-serietoppen</a> · <em>20 apr 07:45</em></p>
-</div>
 
 <h2 style="margin:88px 0 24px 0;font-size:22px;border-bottom:1px solid #eee;padding-bottom:8px;">🗓️ Kommande vecka</h2>
-
 <div data-item>
-<h3 style="margin:0 0 8px 0;font-size:18px;line-height:1.35;">Vårloppis i Särsta</h3>
-<p style="margin:0 0 2px 0;line-height:1.55;">Klassisk loppis i Särstaskolans aula. Utställare på plats från hela Knivsta. Fikaförsäljning till förmån för fritidsverksamheten.</p>
-<p style="margin:0 0 56px 0;font-size:13px;color:#666;"><em>Särstaskolan | Lördag 25/4, kl. 10:00</em> · <a href="https://knivsta.se/event/varloppis-sarsta" style="color:#666;">https://knivsta.se/event/varloppis-sarsta</a></p>
+<h3 style="margin:0 0 8px 0;font-size:18px;line-height:1.35;">Trio X och Mikael Samuelsson</h3>
+<p style="margin:0 0 2px 0;line-height:1.55;">Mikael Samuelsson och Trio X framför ett axplock ur sin stora låtskatt med bland annat musikal och visor under konsertturnén Konsertkarusellen. Konserten bjuder på en musikalisk resa där Mikael Samuelsson tolkar sina favoriter tillsammans med den välrenommerade pianotrion.</p>
+<p style="margin:0 0 56px 0;font-size:13px;color:#666;"><em>CIK | Tisdag 28/4, kl. 19:00 - 21:00</em> · <a href="https://cik.knivsta.se/kalender/trio-x-och-mikael-samuelsson/" style="color:#666;">https://cik.knivsta.se/kalender/trio-x-och-mikael-samuelsson/</a></p>
 </div>
-
 <div data-item>
-<h3 style="margin:0 0 8px 0;font-size:18px;line-height:1.35;">Föreläsning: klimatförändring i vår närmiljö</h3>
-<p style="margin:0 0 2px 0;line-height:1.55;">Naturskyddsföreningen bjuder in forskaren Anna Bergström som berättar om klimateffekter specifikt för Mälardalen. Fika ingår. Fri entré, men föranmälan till info@nsf-knivsta.se.</p>
-<p style="margin:0 0 56px 0;font-size:13px;color:#666;"><em>Biblioteket | Tisdag 28/4, kl. 19:00</em> · <a href="https://knivsta.nu/event/klimat-forelasning" style="color:#666;">https://knivsta.nu/event/klimat-forelasning</a></p>
+<h3 style="margin:0 0 8px 0;font-size:18px;line-height:1.35;">Knivsta Voices med Nanne Grönvall</h3>
+<p style="margin:0 0 2px 0;line-height:1.55;">Kören Knivsta Voices bjuder in till en konsert tillsammans med gästartisten Nanne Grönvall. Det blir en kväll fylld med många av Nannes hits framförda av kören.</p>
+<p style="margin:0 0 56px 0;font-size:13px;color:#666;"><em>CIK | Lördag 2/5, kl. 19:00 - 20:45</em> · <a href="https://cik.knivsta.se/kalender/knivsta-voices-med-nanne-gronvall/" style="color:#666;">https://cik.knivsta.se/kalender/knivsta-voices-med-nanne-gronvall/</a></p>
 </div>
-
 <div data-item>
-<h3 style="margin:0 0 8px 0;font-size:18px;line-height:1.35;">Alsike IF – Bälinge SK (hemmamatch)</h3>
-<p style="margin:0 0 2px 0;line-height:1.55;">Div 4 herr. Första hemmamatchen efter seger borta. Kiosken öppen från 13:30.</p>
-<p style="margin:0 0 56px 0;font-size:13px;color:#666;"><em>Alsikevallen | Lördag 26/4, kl. 14:00</em> · <a href="https://alsike-if.se/matcher/alsike-balinge" style="color:#666;">https://alsike-if.se/matcher/alsike-balinge</a></p>
+<h3 style="margin:0 0 8px 0;font-size:18px;line-height:1.35;">SHREK JR. – the musical</h3>
+<p style="margin:0 0 2px 0;line-height:1.55;">Changes bjuder in till en familjemusikal om träsktrollet Shrek och prinsessan Fiona. Föreställningen bjuder på en oförglömlig upplevelse med barn i huvudrollerna och imponerande videoprojektioner.</p>
+<p style="margin:0 0 56px 0;font-size:13px;color:#666;"><em>CIK | Måndag 4/5, kl. 18:00 - 19:45</em> · <a href="https://cik.knivsta.se/kalender/shrek-jr-the-musical/" style="color:#666;">https://cik.knivsta.se/kalender/shrek-jr-the-musical/</a></p>
 </div>
 
 <hr style="border:none;border-top:1px solid #eee;margin:40px 0;">
@@ -154,15 +259,24 @@
     </div>
   </div>
 
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 <script>
   (function () {
     var content = document.getElementById('content');
     var copyBtn = document.getElementById('copy-btn');
     var restoreBtn = document.getElementById('restore-btn');
 
-    // Injicera ×-knapp i varje post
     var items = content.querySelectorAll('[data-item]');
     items.forEach(function (item) {
+      var drag = document.createElement('button');
+      drag.className = 'item-drag-handle';
+      drag.type = 'button';
+      drag.title = 'Dra för att flytta';
+      drag.setAttribute('aria-label', 'Dra för att flytta');
+      drag.innerHTML = '&#8942;&#8942;';
+      drag.addEventListener('click', function (e) { e.stopPropagation(); e.preventDefault(); });
+      item.appendChild(drag);
+
       var btn = document.createElement('button');
       btn.className = 'item-remove-btn';
       btn.type = 'button';
@@ -185,6 +299,19 @@
       item.appendChild(btn);
     });
 
+    if (window.Sortable) {
+      new Sortable(content, {
+        draggable: '[data-item]',
+        handle: '.item-drag-handle',
+        animation: 150,
+        ghostClass: 'sortable-ghost',
+        chosenClass: 'sortable-chosen',
+        dragClass: 'sortable-drag',
+        forceFallback: true,
+        fallbackTolerance: 4
+      });
+    }
+
     function updateRestoreBtn() {
       var anyRemoved = content.querySelector('[data-item][data-removed="true"]') !== null;
       restoreBtn.classList.toggle('show', anyRemoved);
@@ -201,13 +328,9 @@
 
     function getCopyHTML() {
       var clone = content.cloneNode(true);
-      // Ta bort borttagna poster
       clone.querySelectorAll('[data-item][data-removed="true"]').forEach(function (el) { el.remove(); });
-      // Ta bort ×-knappar
-      clone.querySelectorAll('.item-remove-btn').forEach(function (el) { el.remove(); });
-      // Rensa data-attributet (osynligt men onödigt i Substack)
+      clone.querySelectorAll('.item-remove-btn, .item-drag-handle').forEach(function (el) { el.remove(); });
       clone.querySelectorAll('[data-item]').forEach(function (el) { el.removeAttribute('data-item'); });
-      // Rensa contenteditable (ingen mening i slutpublikationen)
       clone.querySelectorAll('[contenteditable]').forEach(function (el) { el.removeAttribute('contenteditable'); });
       return clone.innerHTML;
     }
@@ -215,7 +338,7 @@
     function getCopyPlain() {
       var clone = content.cloneNode(true);
       clone.querySelectorAll('[data-item][data-removed="true"]').forEach(function (el) { el.remove(); });
-      clone.querySelectorAll('.item-remove-btn').forEach(function (el) { el.remove(); });
+      clone.querySelectorAll('.item-remove-btn, .item-drag-handle').forEach(function (el) { el.remove(); });
       return clone.innerText;
     }
 
@@ -229,7 +352,6 @@
             'text/plain': new Blob([plain], { type: 'text/plain' })
           })]);
         } else {
-          // Fallback: markera DOM-noden tillfälligt och execCommand
           var tmp = document.createElement('div');
           tmp.innerHTML = html;
           tmp.style.position = 'fixed'; tmp.style.left = '-9999px';
